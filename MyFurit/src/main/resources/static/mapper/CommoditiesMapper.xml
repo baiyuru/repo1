@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chang.mapper.CommoditiesMapper">
+
+    <resultMap id="BaseResultMap" type="com.chang.pojo.Commodities">
+        <id column="fid" property="fid" jdbcType="INTEGER"/>
+        <result column="fruitid" property="fruitid" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="price" property="price" jdbcType="DOUBLE"/>
+        <result column="locality" property="locality" jdbcType="VARCHAR"/>
+        <result column="createtime" property="createtime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <select id="queryCommoditiesAll" resultType="com.chang.pojo.Commodities">
+    select * from commodities
+  </select>
+
+    <select id="queryCommoditiesById" parameterType="Integer" resultType="com.chang.pojo.Commodities">
+        select * from commodities where fid = #{fid}
+    </select>
+
+    <insert id="addCommodities" parameterType="com.chang.pojo.Commodities">
+        INSERT INTO commodities(name,price,locality,createtime)
+        values (#{name},#{price},#{locality},#{createtime})
+    </insert>
+
+    <delete id="delCommodities" parameterType="Integer">
+        delete from commodities where fid = #{fid}
+    </delete>
+
+    <update id="updateCommodities" parameterType="com.chang.pojo.Commodities">
+        update commodities
+        <set>
+            <if test="name != null and name !=''">
+                `name` = #{name},
+            </if>
+            <if test="price != null and price !=''">
+                price = #{price},
+            </if>
+            <if test="locality != null and locality !=''">
+                locality = #{locality},
+            </if>
+            <if test="createtime != null">
+                createtime = #{createtime},
+            </if>
+        </set>
+
+        where fid = #{fid}
+    </update>
+
+    <select id="findCommoditiesList" parameterType="com.chang.pojo.QueryVo" resultType="com.chang.pojo.Commodities">
+        select * from commodities
+        <where>
+            <if test="name!=null and name!=''">
+                name like "%"#{name}"%"
+            </if>
+            <if test="locality!=null and locality!=''">
+                and locality like "%"#{locality}"%"
+            </if>
+            <if test="startPrice!=null and startPrice!=''">
+                and price>=#{startPrice}
+            </if>
+            <if test="endPrice!=null and endPrice!=''">
+                and price &lt;=#{endPrice}
+            </if>
+            <if test="startTime!=null ">
+                and createtime >=#{startTime}
+            </if>
+            <if test="endTime!=null ">
+                and createtime &lt;=#{endTime}
+            </if>
+        </where>
+    </select>
+
+
+</mapper>
